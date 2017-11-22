@@ -13,6 +13,8 @@ import cfca.x509.certificate.X509Cert;
 import cfca.x509.certificate.X509CertHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -54,7 +56,17 @@ public class App {
         System.out.println("加密后：");
         System.out.println(encryptContext);
 
-        String dncryptContext = dncrypt(encryptContext);
+
+        RestTemplate restTemplate=new RestTemplate();
+
+        Map<String,String> data =new HashMap<String, String>();
+
+        data.put("businessContext", encryptContext);
+
+        ResponseEntity<HashMap> stringResponseEntity = restTemplate.postForEntity("http://wxpay.cmbc.com.cn:1080/mobilePlatform/lcbpService/queryMchnt.do", data, HashMap.class);
+
+
+        String dncryptContext = dncrypt(stringResponseEntity.toString());
         System.out.println("--------------------------------------");
         System.out.println("解密后：");
         System.out.println(dncryptContext);
