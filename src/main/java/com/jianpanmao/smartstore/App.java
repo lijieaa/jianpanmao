@@ -13,6 +13,7 @@ import cfca.x509.certificate.X509Cert;
 import cfca.x509.certificate.X509CertHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -29,6 +30,13 @@ import java.util.Map;
 public class App {
 
     private static String context = "{\"txnSeq\":\"100860001111111000\",\"platformId\":\"A00012017050000000545\",\"outMchntId\":\"O01002016070000000635\",\"cmbcMchntId\":\"\",\"message\":\"\"}";
+    //private static String context = "{\"txnSeq\":\"100860001111111000\",\"platformId\":\"A00002016120000000294\",\"outMchntId\":\"\",\"cmbcMchntId\":\"\",\"message\":\"\"}";
+   /* private static String context = "{\"txnSeq\":\"100860001111111000\",\"platformId\":\"A00002016080000000049\",\"operId\":\"10010A0001\",\"outMchntId\":\"O01002016070000000789\",\"mchntName\":\"Demo进件测试商户\",\n" +
+            "\"parentMchntId\":\"\",\"industryId\":\"105\",\"acdCode\":\"130105\",\"province\":\"河北省\",\n" +
+            "\"city\":\"石家庄市\",\"address\":\"新华区华西路53号\",\n" +
+            "\"licId\":\"1301053123456\",\"licIdValidity\":\"\",\"corpName\":\"唐门\",\n" +
+            "\"idtCard\":\"130105187808235612\",\"contactName\":\"唐三角\",\n" +
+            "\"telephone\":\"13880880808\",\"servTel\":\"13839795841\",\"identification\":\"\",\"remark\":\"\",\"message\":\"\",\"devType\":\"1\",\"autoSettle\":\"1\"}";*/
     private static Session session;
 
     static {
@@ -57,16 +65,30 @@ public class App {
         System.out.println(encryptContext);
 
 
+       // encryptContext="MIIB6AYKKoEcz1UGAQQCA6CCAdgwggHUAgECMYGdMIGaAgECgBS1x/e/puEJbLQnTtwm2y/+fP1b2jANBgkqgRzPVQGCLQMFAARwA0Cb9GsPb5zFziSwicmOh8e122l4Jt6CsrSEEt+h182Tq0IuiDPNvkOyND4rcfKUHxrG9SV17fKfsK1dwL70V21D09eOzBO5kFIE2iiFVa22Uh41VchYl8mniQMFtFj2iAf6pQU5XlaeQD3V55uiuTCCAS0GCiqBHM9VBgEEAgEwGwYHKoEcz1UBaAQQ2ctqTaq5tzLBdOX8harYEYCCAQAJjPVCNvxSapA4YTWDMXOIwuxjvyfXVmv2T2/9G32P8Bm7xSCRVOs0XNKgmiaGPfeutEH7U2Awwx2EyBqr/ypt+5E7aNgw181aROE4Xouzxu7+j2MqdMFFbtCTt68dj0ke7HQ4zNRjIAEJNr2aSOx5yk5OKVbAuSv/W+oNoaPlrUle+LO3eBY/J65hwqsywIwPmpXCh7ipB7RO3Vjy65z4SaWFndOVf+9yEUZYwITAzkU3SVYuFDdZVnByVxknUEyp+5OhqcQQbhd+cmL8ApfLvlIdR957X1Ngrjz3XumjD/Ej3pBlwN52IuMnaNlx25wHLa/bxre9cUQ3vERrmLWI";
+
+
         RestTemplate restTemplate=new RestTemplate();
 
         Map<String,String> data =new HashMap<String, String>();
 
         data.put("businessContext", encryptContext);
 
+
+        //JsonObject jsonObject=new JsonObject();
+
+
+        //String data1="{\"businessContext\":\"MIICeAYKKoEcz1UGAQQCA6CCAmgwggJkAgECMYGdMIGaAgECgBRZlNziHI2cFrW5Ep1ym13ckOMoGTANBgkqgRzPVQGCLQMFAARwuD2YDdJg1AzviLzjomoulp0Oy9lPqrjyM76a4AvOJcaon3F5kx0ZunQtnjLp4VZjVigMzqR7EwytqREHCD+lUre+KPPwmTscwfky2z9wFpsd9/v+r1sBMApnqFzhNORP/wO6y1CNVwEFk4f7pXK3qzCCAb0GCiqBHM9VBgEEAgEwGwYHKoEcz1UBaAQQVB+g5qy4N+lgRnEe+xX9RoCCAZD0oCiUoebUt5oZTI7GeH2w4t/J9TLExEtBW+Mls7lkzzFME6s8B9sF+t79lbZNugKJlHNvmEHiF0ZaHjVX+Ej5lSlf+avm2IrXkuHo0F8zPDsJ54xPxuQbycH83R1Qvc7YHSWrkv6ZHwhy4dKAqHJ9vztJ0YlP0oai2hVqjrH9uiAXyNZsMppFgo8VOwaOx89vDetMFm4pY5RtKtOV4lAVWbUhkZAPvRAlIThwC0nYwI/G53d2jjAJoLR67VCri4TtMSHBuIpq34rLs3/3lkDUgXTklJvoKtg0xcuZJuf6UD5ra4vjs+TE5PWlapr0l5sdSm/qmO/n32B6JFKs29mFpUPq+IzG1iPj9omirs8FUipV5VPAU3J5Cyb+8z841KHmlNZHrlXIrrs/Nwpdb3oqxhJ2DoF/CVcdcuirsmHeXJoYwfF/ZJya/+oZuSQSJZ/Cio3POML+0xOkW2sJWshPVXG1FLfJCqZkzfHK1QjiZJnOnM/vGmBtxfYpAUVd4ZtrXI/QcGs1doMMM4Oc7Ntx\",\"gateReturnCode\":\"\",\"gateReturnMessage\":\"\",\"gateReturnType\":\"S\",\"gateSeq\":\"20171123180345485\",\"gateTransDate\":\"20171123\",\"gateTransTime\":\"20171123180345485\",\"merchantSeq\":\"\",\"reserve1\":\"\",\"reserve2\":\"\",\"reserve3\":\"\",\"reserveJson\":\"\",\"transCode\":\"\"}";
+
+
         ResponseEntity<HashMap> stringResponseEntity = restTemplate.postForEntity("http://wxpay.cmbc.com.cn:1080/mobilePlatform/lcbpService/queryMchnt.do", data, HashMap.class);
 
 
-        String dncryptContext = dncrypt(stringResponseEntity.toString());
+        System.out.println(stringResponseEntity.getBody().get("businessContext"));
+
+
+        String dncryptContext = dncrypt((
+                String)stringResponseEntity.getBody().get("businessContext"));
         System.out.println("--------------------------------------");
         System.out.println("解密后：");
         System.out.println(dncryptContext);
@@ -104,7 +126,7 @@ public class App {
      */
     @SuppressWarnings("deprecation")
     public static String encrypt(String signContext) {
-        String certAbsPath = Config.getProperty("merchantPublicKey");
+        String certAbsPath = Config.getProperty("bankPublicKey");
         X509Cert cert = null;
         try {
             cert = X509CertHelper.parse(certAbsPath);
