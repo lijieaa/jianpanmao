@@ -22,11 +22,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="jianpanmao" />
+        <module name="notice" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="jianpanmao" target="1.6" />
+      <module name="notice" target="1.6" />
     </bytecodeTargetLevel>
   </component>
 </project>

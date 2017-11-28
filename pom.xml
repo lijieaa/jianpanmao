@@ -6,7 +6,11 @@
 
     <groupId>com.jianpanmao</groupId>
     <artifactId>SmartStore</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>notice</module>
+    </modules>
 
 
     <parent>
@@ -24,5 +28,17 @@
     </dependencies>
 
 
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
