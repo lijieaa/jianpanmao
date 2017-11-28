@@ -397,11 +397,60 @@ public class App {
 
 
     /**
+     * 微信公众号跳转
+     */
+    @Test
+    public void API_WXAPP(){
+        String context="{\"platformId\":\"A00012017060000000691\",\"merchantNo\":\"M29002017110000030909\",\"merchantSeq\":\"A000120170600000006912017112803\",\"mchSeqNo\":\"A000120170600000006912017112803\",\"selectTradeType\":\"API_WXAPP\",\"amount\":\"1\",\"orderInfo\":\"统一下单DEMO-API_WXAPP\",\"notifyUrl\":\"https://39.108.49.56\",\"remark\":\"\",\"transDate\":\"20171128\",\"transTime\":\"20171128122204720\",\"inExtData\":\"测试请求扩展大字段\",\"spbillCreateIp\":\"39.108.49.56\"}";
+        String sign = getSign(context);
+        System.out.println("--------------------------------------");
+        System.out.println("签名：");
+        System.out.println(sign);
+
+        String signContext = sign(sign, context);
+        System.out.println("--------------------------------------");
+        System.out.println("加密前：");
+        System.out.println(signContext);
+
+        String encryptContext = encrypt(signContext);
+        System.out.println("--------------------------------------");
+        System.out.println("加密后：");
+        System.out.println(encryptContext);
+
+
+        RestTemplate restTemplate=new RestTemplate();
+
+        Map<String,String> data =new HashMap<String, String>();
+
+        data.put("businessContext", encryptContext);
+
+
+
+        ResponseEntity<HashMap> stringResponseEntity = restTemplate.postForEntity("http://wxpay.cmbc.com.cn:1080/mobilePlatform/appserver/lcbpPay.do", data, HashMap.class);
+
+
+        System.out.println(stringResponseEntity);
+
+
+        String dncryptContext = dncrypt((String)stringResponseEntity.getBody().get("businessContext"));
+        System.out.println("--------------------------------------");
+        System.out.println("解密后：");
+        System.out.println(dncryptContext);
+
+        String signChkResult = signCheck(dncryptContext);
+        System.out.println("--------------------------------------");
+        System.out.println("验证签名结果：");
+        System.out.println(signChkResult);
+    }
+
+
+
+    /**
      * 微信正扫
      */
     @Test
     public void API_WXQRCODE(){
-        String context="{\"platformId\":\"A00012017060000000691\",\"merchantNo\":\"M29002017110000030912\",\"merchantSeq\":\"A0001201706000000069159\",\"mchSeqNo\":\"A00012017050000000545T20171127230159R140\",\"selectTradeType\":\"API_WXQRCODE\",\"amount\":\"1\",\"orderInfo\":\"统一下单DEMO-API_WXQRCODE\",\"notifyUrl\":\"http://39.108.49.56\",\"remark\":\"\",\"transDate\":\"20171127\",\"transTime\":\"2017112723010410\",\"inExtData\":\"测试请求扩展大字段\"}";
+        String context="{\"platformId\":\"A00012017060000000691\",\"merchantNo\":\"M29002017110000030955\",\"merchantSeq\":\"M2900201711000003095503\",\"mchSeqNo\":\"M2900201711000003095503\",\"selectTradeType\":\"API_WXQRCODE\",\"amount\":\"1\",\"orderInfo\":\"统一下单DEMO-API_WXQRCODE\",\"notifyUrl\":\"http://39.108.49.56\",\"remark\":\"\",\"transDate\":\"20171128\",\"transTime\":\"20171128111604107\",\"inExtData\":\"测试请求扩展大字段\"}";
         String sign = getSign(context);
         System.out.println("--------------------------------------");
         System.out.println("签名：");
@@ -449,7 +498,7 @@ public class App {
      */
     @Test
     public void API_WXSCAN(){
-        String context="{\"platformId\":\"A00012017060000000691\",\"merchantNo\":\"M29002017110000030909\",\"merchantSeq\":\"A000120170600000006912017112713\",\"mchSeqNo\":\"11\",\"selectTradeType\":\"API_WXSCAN\",\"amount\":\"1\",\"orderInfo\":\"统一下单DEMO-API_WXSCAN\",\"notifyUrl\":\"http://39.108.49.56\",\"remark\":\"MTQwMDAwMDAwMDAwMDAwMDAw\",\"transDate\":\"20171126\",\"transTime\":\"20171126111304888\",\"inExtData\":\"测试请求扩展大字段\"}";
+        String context="{\"platformId\":\"A00012017060000000691\",\"merchantNo\":\"M29002017110000030955\",\"merchantSeq\":\"M2900201711000003095504\",\"mchSeqNo\":\"11\",\"selectTradeType\":\"API_WXSCAN\",\"amount\":\"1\",\"orderInfo\":\"统一下单DEMO-API_WXSCAN\",\"notifyUrl\":\"http://39.108.49.56\",\"remark\":\"MTQwMDAwMDAwMDAwMDAwMDAw\",\"transDate\":\"20171126\",\"transTime\":\"20171126111304888\",\"inExtData\":\"测试请求扩展大字段\"}";
         String sign = getSign(context);
         System.out.println("--------------------------------------");
         System.out.println("签名：");
@@ -739,7 +788,7 @@ public class App {
      */
     @Test
     public void QUERY(){
-        String context="{\"platformId\":\"A00012017060000000691\",\"merchantNo\":\"M29002017110000030909\",\"merchantSeq\":\"A000120170600000006912017112612\",\"tradeType\":\"1\",\"orgvoucherNo\":\"10862016070514230500\",\"reserve\":\"查询支付或查询退款\"}";
+        String context="{\"platformId\":\"A00012017060000000691\",\"merchantNo\":\"M29002017110000030955\",\"merchantSeq\":\"M2900201711000003095504\",\"tradeType\":\"1\",\"orgvoucherNo\":\"10862016070514230500\",\"reserve\":\"查询支付或查询退款\"}";
         String sign = getSign(context);
         System.out.println("--------------------------------------");
         System.out.println("签名：");
@@ -783,11 +832,11 @@ public class App {
 
 
     /**
-     * 退款
+     * 退款A000120170600000006912017112804
      */
     @Test
     public void CANCEL(){
-        String context="{\"platformId\":\"A00012017060000000691\",\"merchantNo\":\"M29002017110000030909\",\"merchantSeq\":\"A000120170600000006912017112612\",\"mchSeqNo\":\"11\",\"orderAmount\":\"1\",\"orderNote\":\"退款\",\"reserve\":\"下错单了\"}";
+        String context="{\"platformId\":\"A00012017060000000691\",\"merchantNo\":\"M29002017110000030955\",\"merchantSeq\":\"M2900201711000003095503\",\"mchSeqNo\":\"11\",\"orderAmount\":\"1\",\"orderNote\":\"退款\",\"reserve\":\"下错单了\"}";
         String sign = getSign(context);
         System.out.println("--------------------------------------");
         System.out.println("签名：");
@@ -812,7 +861,7 @@ public class App {
 
 
 
-        ResponseEntity<HashMap> stringResponseEntity = restTemplate.postForEntity("http://wxpay.cmbc.com.cn:1080/mobilePlatform/appserver/paymentResultSelect.do", data, HashMap.class);
+        ResponseEntity<HashMap> stringResponseEntity = restTemplate.postForEntity("http://wxpay.cmbc.com.cn:1080/mobilePlatform/appserver/cancelTrans.do", data, HashMap.class);
 
 
         System.out.println(stringResponseEntity);
