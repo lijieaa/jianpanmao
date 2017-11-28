@@ -14,6 +14,7 @@ import cfca.x509.certificate.X509CertHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import org.junit.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -29,7 +30,7 @@ import java.util.Map;
  */
 public class App {
 
-    private static String context = "{\"txnSeq\":\"100860001111111000\",\"platformId\":\"A00012017050000000545\",\"outMchntId\":\"O01002016070000000635\",\"cmbcMchntId\":\"\",\"message\":\"\"}";
+    private static String context = "{\"txnSeq\":\"\",\"platformId\":\"A00012017060000000691\",\"outMchntId\":\"O01002016070000000635\",\"cmbcMchntId\":\"M29002017110000030817\",\"message\":\"\"}";
     //private static String context = "{\"txnSeq\":\"100860001111111000\",\"platformId\":\"A00002016120000000294\",\"outMchntId\":\"\",\"cmbcMchntId\":\"\",\"message\":\"\"}";
    /* private static String context = "{\"txnSeq\":\"100860001111111000\",\"platformId\":\"A00002016080000000049\",\"operId\":\"10010A0001\",\"outMchntId\":\"O01002016070000000789\",\"mchntName\":\"Demo进件测试商户\",\n" +
             "\"parentMchntId\":\"\",\"industryId\":\"105\",\"acdCode\":\"130105\",\"province\":\"河北省\",\n" +
@@ -75,20 +76,279 @@ public class App {
         data.put("businessContext", encryptContext);
 
 
-        //JsonObject jsonObject=new JsonObject();
-
-
-        //String data1="{\"businessContext\":\"MIICeAYKKoEcz1UGAQQCA6CCAmgwggJkAgECMYGdMIGaAgECgBRZlNziHI2cFrW5Ep1ym13ckOMoGTANBgkqgRzPVQGCLQMFAARwuD2YDdJg1AzviLzjomoulp0Oy9lPqrjyM76a4AvOJcaon3F5kx0ZunQtnjLp4VZjVigMzqR7EwytqREHCD+lUre+KPPwmTscwfky2z9wFpsd9/v+r1sBMApnqFzhNORP/wO6y1CNVwEFk4f7pXK3qzCCAb0GCiqBHM9VBgEEAgEwGwYHKoEcz1UBaAQQVB+g5qy4N+lgRnEe+xX9RoCCAZD0oCiUoebUt5oZTI7GeH2w4t/J9TLExEtBW+Mls7lkzzFME6s8B9sF+t79lbZNugKJlHNvmEHiF0ZaHjVX+Ej5lSlf+avm2IrXkuHo0F8zPDsJ54xPxuQbycH83R1Qvc7YHSWrkv6ZHwhy4dKAqHJ9vztJ0YlP0oai2hVqjrH9uiAXyNZsMppFgo8VOwaOx89vDetMFm4pY5RtKtOV4lAVWbUhkZAPvRAlIThwC0nYwI/G53d2jjAJoLR67VCri4TtMSHBuIpq34rLs3/3lkDUgXTklJvoKtg0xcuZJuf6UD5ra4vjs+TE5PWlapr0l5sdSm/qmO/n32B6JFKs29mFpUPq+IzG1iPj9omirs8FUipV5VPAU3J5Cyb+8z841KHmlNZHrlXIrrs/Nwpdb3oqxhJ2DoF/CVcdcuirsmHeXJoYwfF/ZJya/+oZuSQSJZ/Cio3POML+0xOkW2sJWshPVXG1FLfJCqZkzfHK1QjiZJnOnM/vGmBtxfYpAUVd4ZtrXI/QcGs1doMMM4Oc7Ntx\",\"gateReturnCode\":\"\",\"gateReturnMessage\":\"\",\"gateReturnType\":\"S\",\"gateSeq\":\"20171123180345485\",\"gateTransDate\":\"20171123\",\"gateTransTime\":\"20171123180345485\",\"merchantSeq\":\"\",\"reserve1\":\"\",\"reserve2\":\"\",\"reserve3\":\"\",\"reserveJson\":\"\",\"transCode\":\"\"}";
-
-
         ResponseEntity<HashMap> stringResponseEntity = restTemplate.postForEntity("http://wxpay.cmbc.com.cn:1080/mobilePlatform/lcbpService/queryMchnt.do", data, HashMap.class);
 
 
-        System.out.println(stringResponseEntity.getBody().get("businessContext"));
+        System.out.println(stringResponseEntity.getBody());
 
 
-        String dncryptContext = dncrypt((
-                String)stringResponseEntity.getBody().get("businessContext"));
+        String dncryptContext = dncrypt((String)stringResponseEntity.getBody().get("businessContext"));
+        System.out.println("--------------------------------------");
+        System.out.println("解密后：");
+        System.out.println(dncryptContext);
+
+        String signChkResult = signCheck(dncryptContext);
+        System.out.println("--------------------------------------");
+        System.out.println("验证签名结果：");
+        System.out.println(signChkResult);
+    }
+
+
+
+
+
+    @Test
+    public void API_ZFBSCAN(){
+
+
+        String context="{\"platformId\":\"A00012017060000000691\",\"merchantNo\":\"M29002017110000030909\",\"merchantSeq\":\"A0001201706000000069131\",\"mchSeqNo\":\"A00012017050000000545T20171127094901R61\",\"selectTradeType\":\"API_ZFBSCAN\",\"amount\":\"1\",\"orderInfo\":\"统一下单DEMO-API_ZFBSCAN\",\"notifyUrl\":\"https://wxpay.cmbc.com.cn/cmbcpaydemo/NoticeServlet?name=notice\",\"remark\":\"MTQwMDAwMDAwMDAwMDAwMDAw\",\"transDate\":\"20171127\",\"transTime\":\"20171127094904956\",\"inExtData\":\"测试请求扩展大字段\"}";
+
+        String sign = getSign(context);
+        System.out.println("--------------------------------------");
+        System.out.println("签名：");
+        System.out.println(sign);
+
+        String signContext = sign(sign, context);
+        System.out.println("--------------------------------------");
+        System.out.println("加密前：");
+        System.out.println(signContext);
+
+        String encryptContext = encrypt(signContext);
+        System.out.println("--------------------------------------");
+        System.out.println("加密后：");
+        System.out.println(encryptContext);
+
+
+
+
+        RestTemplate restTemplate=new RestTemplate();
+
+        Map<String,String> data =new HashMap<String, String>();
+
+        data.put("businessContext", encryptContext);
+
+
+        ResponseEntity<HashMap> stringResponseEntity = restTemplate.postForEntity("http://wxpay.cmbc.com.cn:1080/mobilePlatform/appserver/lcbpPay.do", data, HashMap.class);
+
+
+        System.out.println(stringResponseEntity.getBody());
+
+
+        String dncryptContext = dncrypt((String)stringResponseEntity.getBody().get("businessContext"));
+        System.out.println("--------------------------------------");
+        System.out.println("解密后：");
+        System.out.println(dncryptContext);
+
+        String signChkResult = signCheck(dncryptContext);
+        System.out.println("--------------------------------------");
+        System.out.println("验证签名结果：");
+        System.out.println(signChkResult);
+    }
+
+
+    /**
+     * 退款
+     */
+    @Test
+    public void CANCEL(){
+
+
+        String context="{\"platformId\":\"A00012017060000000691\",\"merchantNo\":\"M29002017110000030909\",\"merchantSeq\":\"A0001201706000000069136\",\"mchSeqNo\":\"A0001201706000000069135\",\"orderAmount\":\"1\",\"orderNote\":\"退款\",\"reserve\":\"下错单了\"}";
+
+        String sign = getSign(context);
+        System.out.println("--------------------------------------");
+        System.out.println("签名：");
+        System.out.println(sign);
+
+        String signContext = sign(sign, context);
+        System.out.println("--------------------------------------");
+        System.out.println("加密前：");
+        System.out.println(signContext);
+
+        String encryptContext = encrypt(signContext);
+        System.out.println("--------------------------------------");
+        System.out.println("加密后：");
+        System.out.println(encryptContext);
+
+
+
+
+        RestTemplate restTemplate=new RestTemplate();
+
+        Map<String,String> data =new HashMap<String, String>();
+
+        data.put("businessContext", encryptContext);
+
+
+        ResponseEntity<HashMap> stringResponseEntity = restTemplate.postForEntity("http://wxpay.cmbc.com.cn:1080/mobilePlatform/appserver/cancelTrans.do", data, HashMap.class);
+
+
+        System.out.println(stringResponseEntity.getBody());
+
+
+        String dncryptContext = dncrypt((String)stringResponseEntity.getBody().get("businessContext"));
+        System.out.println("--------------------------------------");
+        System.out.println("解密后：");
+        System.out.println(dncryptContext);
+
+        String signChkResult = signCheck(dncryptContext);
+        System.out.println("--------------------------------------");
+        System.out.println("验证签名结果：");
+        System.out.println(signChkResult);
+    }
+
+
+    /**
+     * 商户提现
+     */
+    @Test
+    public void wddp(){
+
+
+        String context="{\"merchantNo\":\"M29002017110000030909\",\"platformId\":\"A00012017060000000691\",\"tradeAmount\":\"1\",\"tradeNote\":\"\"}";
+
+        String sign = getSign(context);
+        System.out.println("--------------------------------------");
+        System.out.println("签名：");
+        System.out.println(sign);
+
+        String signContext = sign(sign, context);
+        System.out.println("--------------------------------------");
+        System.out.println("加密前：");
+        System.out.println(signContext);
+
+        String encryptContext = encrypt(signContext);
+        System.out.println("--------------------------------------");
+        System.out.println("加密后：");
+        System.out.println(encryptContext);
+
+
+
+
+        RestTemplate restTemplate=new RestTemplate();
+
+        Map<String,String> data =new HashMap<String, String>();
+
+        data.put("businessContext", encryptContext);
+
+
+        ResponseEntity<HashMap> stringResponseEntity = restTemplate.postForEntity("http://wxpay.cmbc.com.cn:1080/mobilePlatform/appserver/wddp.do", data, HashMap.class);
+
+
+        System.out.println(stringResponseEntity.getBody());
+
+
+        String dncryptContext = dncrypt((String)stringResponseEntity.getBody().get("businessContext"));
+        System.out.println("--------------------------------------");
+        System.out.println("解密后：");
+        System.out.println(dncryptContext);
+
+        String signChkResult = signCheck(dncryptContext);
+        System.out.println("--------------------------------------");
+        System.out.println("验证签名结果：");
+        System.out.println(signChkResult);
+    }
+
+
+    /**
+     * API_WXQRCODE
+     * 商户提现信息查询
+     */
+    @Test
+    public void WDDPQ(){
+
+
+        String context="{\"merchantNo\":\"M29002017110000030817\",\"platformId\":\"A00012017060000000691\",\"tradeAmount\":\"\",\"tradeNote\":\"\"}";
+
+        String sign = getSign(context);
+        System.out.println("--------------------------------------");
+        System.out.println("签名：");
+        System.out.println(sign);
+
+        String signContext = sign(sign, context);
+        System.out.println("--------------------------------------");
+        System.out.println("加密前：");
+        System.out.println(signContext);
+
+        String encryptContext = encrypt(signContext);
+        System.out.println("--------------------------------------");
+        System.out.println("加密后：");
+        System.out.println(encryptContext);
+
+
+
+
+        RestTemplate restTemplate=new RestTemplate();
+
+        Map<String,String> data =new HashMap<String, String>();
+
+        data.put("businessContext", encryptContext);
+
+
+        ResponseEntity<HashMap> stringResponseEntity = restTemplate.postForEntity("http://wxpay.cmbc.com.cn:1080/mobilePlatform/appserver/wddpQuery.do", data, HashMap.class);
+
+
+        System.out.println(stringResponseEntity.getBody());
+
+
+        String dncryptContext = dncrypt((String)stringResponseEntity.getBody().get("businessContext"));
+        System.out.println("--------------------------------------");
+        System.out.println("解密后：");
+        System.out.println(dncryptContext);
+
+        String signChkResult = signCheck(dncryptContext);
+        System.out.println("--------------------------------------");
+        System.out.println("验证签名结果：");
+        System.out.println(signChkResult);
+    }
+
+
+
+
+
+
+
+    /**
+     * 微信正扫
+     */
+    @Test
+    public void API_WXQRCODE(){
+
+
+        String context="{\"platformId\":\"A00012017060000000691\",\"merchantNo\":\"M29002017110000030909\",\"merchantSeq\":\"A0001201706000000069147\",\"mchSeqNo\":\"A00012017050000000545T20171127180227R867\",\"selectTradeType\":\"API_ZFBQRCODE\",\"amount\":\"1\",\"orderInfo\":\"统一下单DEMO-API_ZFBQRCODE\",\"notifyUrl\":\"http://vszapp.com:8111/notice\",\"remark\":\"\",\"transDate\":\"20171127\",\"transTime\":\"2017112718020494\",\"inExtData\":\"测试请求扩展大字段\"}";
+
+        String sign = getSign(context);
+        System.out.println("--------------------------------------");
+        System.out.println("签名：");
+        System.out.println(sign);
+
+        String signContext = sign(sign, context);
+        System.out.println("--------------------------------------");
+        System.out.println("加密前：");
+        System.out.println(signContext);
+
+        String encryptContext = encrypt(signContext);
+        System.out.println("--------------------------------------");
+        System.out.println("加密后：");
+        System.out.println(encryptContext);
+
+
+
+
+        RestTemplate restTemplate=new RestTemplate();
+
+        Map<String,String> data =new HashMap<String, String>();
+
+        data.put("businessContext", encryptContext);
+
+
+        ResponseEntity<HashMap> stringResponseEntity = restTemplate.postForEntity("http://wxpay.cmbc.com.cn:1080/mobilePlatform/appserver/lcbpPay.do", data, HashMap.class);
+
+
+        System.out.println(stringResponseEntity.getBody());
+
+
+        String dncryptContext = dncrypt((String)stringResponseEntity.getBody().get("businessContext"));
         System.out.println("--------------------------------------");
         System.out.println("解密后：");
         System.out.println(dncryptContext);
@@ -183,7 +443,7 @@ public class App {
      * @return
      */
     public static String signCheck(String dncryptContext) {
-        String certAbsPath = Config.getProperty("merchantPublicKey");
+        String certAbsPath = Config.getProperty("bankPublicKey");
         Gson gson = new Gson();
         @SuppressWarnings("unchecked")
         Map<String, Object> paraMap = gson.fromJson(dncryptContext, Map.class);
